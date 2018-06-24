@@ -1,0 +1,22 @@
+import (./role), (./position)
+
+layer adminClient @1
+
+model User @1 {
+    id: PK(int)
+    username: string
+    roles: [Role]
+    password: string ONLY(create, update?)
+}
+
+model UserProfile @1 {
+    id: PK(int)
+    name: string
+    position: Position
+    avatar: blob?
+}
+
+model JoinedUser @1 {
+    ...UserProfile
+    user: User
+}
