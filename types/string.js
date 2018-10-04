@@ -11,6 +11,10 @@ module.exports = function (Field) {
             }
             return true;
         }
+
+        clone(premadeInstance = new StringField(this.length)) {
+            return super.clone(premadeInstance);
+        }
     }
     return StringField;
 };

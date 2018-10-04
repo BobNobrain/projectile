@@ -1,0 +1,32 @@
+{
+    "ptl": "res@1",
+    "ctx": {},
+    "result": [{
+        "pageInfo": {
+            "page": 1,
+            "hasPrev": false,
+            "hasNext": true,
+            "total": 23
+        },
+        "data": [
+            {
+                "name": "John Doe",
+                "age": 30,
+                "sex": "M",
+                "account": null
+            },
+            {
+                "name": "Jone Doe",
+                "age": 30,
+                "sex": "F",
+                "account": {
+                    "username": "jdoe",
+                    "roles": [{
+                        "code": "user",
+                        "name": "User"
+                    }]
+                }
+            }
+        ]
+    }]
+}

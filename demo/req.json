@@ -1,0 +1,30 @@
+{
+    "ptl": "req@1",
+    "ctx": {
+        "api@1": {
+            "token": "auth-token"
+        }
+    },
+    "do": [
+        {
+            "name": ["api@1", "Person", "list"],
+            "args": [{
+                "pagination": {
+                    "page": 1,
+                    "pageSize": 10
+                },
+                "includeRelationships": {
+                    "account": {
+                        "project": "*"
+                    },
+                    "account.roles": {
+                        "pagination": {
+                            "all": true
+                        },
+                        "project": ["name", "code"]
+                    }
+                }
+            }]
+        }
+    ]
+}

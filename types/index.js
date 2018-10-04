@@ -1,11 +1,16 @@
-const { Field } = require('../model');
+const Field = require('../model/Field');
+const ComputedField = require('../model/ComputedField');
 
 const types = [
     'string',
     'int',
-    'float',
-
-    'PK'
+    // 'float',
+    // 'datetime',
+    // 'time',
+    // 'blob',
+    // 'text',
+    // 'boolean',
+    // 'json'
 ];
 
 module.exports = types.reduce(
@@ -16,5 +21,9 @@ module.exports = types.reduce(
         }
         return e;
     },
-    {}
+    {
+        computed(...args) {
+            return new ComputedField(...args);
+        }
+    }
 );

@@ -1,0 +1,21 @@
+{
+    "ptl": "req@1",
+    "ctx": {
+        "api@1": {
+            "token": null
+        }
+    },
+    "do": [{
+        "name": ["api@1", "sync"],
+        "args": []
+    }]
+}
+
+{
+    "ptl": "res@1",
+    "ctx": {},
+    "result": [{
+        "api@1": [
+        ]
+    }]
+}

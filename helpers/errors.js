@@ -7,6 +7,13 @@ function abstract(what) {
     throw new AbtractMethodError(what);
 }
 
-module.exports = {
-    abstract;
+class ArgumentError extends Error {
 }
+function required(what) {
+    throw new ArgumentError(what + ' is required argument');
+}
+
+module.exports = {
+    abstract,
+    required
+};
