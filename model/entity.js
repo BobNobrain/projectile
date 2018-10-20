@@ -1,18 +1,6 @@
 class Entity {
     identify() {
-        const result = {};
-        const pkNames = this.constructor.model.primaryKeyFieldNames;
-        for (let i = 0; i < pkNames.length; i++) {
-            result[pkNames[i]] = this[pkNames[i]];
-        }
-        return result;
-    }
-
-    wasSaved() {
-        const id = this.identify();
-        const hasUpstream = Object.keys(id)
-            .map(fieldName => id[fieldName])
-            .every(idValue => idValue !== void 0);
+        return this[this.constructor.model.pkField.name];
     }
 
     // TODO: merge returned data into this
@@ -46,17 +34,9 @@ class Entity {
     }
 }
 
-Entity.read = function (primaryValues) {
-    const model = this.model;
-    for (let fieldName in model.fields) {
-        const field = model.fields[fieldName];
-        if (!field.primary) continue;
-        if (!primaryValues.hasOwnProperty(fieldName)) {
-            throw new TypeError(`Primary field ${model.name}::${fieldName} is required for Entity::read!`);
-        }
-    }
-    return model.read(primaryValues)
-        .then(readData => new this(readData, 'R'));
+Entity.read = function (identity) {
+    return model.read(identity)
+        .then(readData => new this(readData));
 };
 Entity.list = function (parameters) {
     return this.model.list(parameters)
@@ -69,9 +49,14 @@ Entity.callUpstream = function (methodName, args) {
 
 module.exports = function createEntitySubclass(model) {
     const EntitySubclass = class extends Entity {
-        constructor(values, stream = 'C') {
+        constructor(values, virtual) {
             // fulfill all fields
-            model.intoStream(values, stream, /*target:*/ this);
+            for (let fieldName in model.fields) {
+                this[fieldName] = values[fieldName];
+            }
+            this._orm = {
+                virtual
+            };
         }
     };
     EntitySubclass.model = model;
@@ -94,7 +79,7 @@ module.exports = function createEntitySubclass(model) {
             });
         } else {
             // async computeds
-            EntitySubclass[computedPropertyName] = function asyncComputed (...args) {
+            EntitySubclass[computedPropertyName] = function asyncComputed(...args) {
                 if (args.length) {
                     return Promise.resolve(prop.setter(this, ...args));
                 } else {

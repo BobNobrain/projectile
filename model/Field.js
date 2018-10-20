@@ -10,8 +10,6 @@ class Field {
 
         this.model = null;
 
-        this.streams = 'CRU'.split('');
-
         this.meta = {
             label: null,
             description: null,
@@ -32,17 +30,7 @@ class Field {
         this.defaultValue = value;
         return this;
     }
-    only(streams) {
-        this.streams = streams.split('').filter(s => {
-            if (['C', 'R', 'U', 'D'].includes(s)) {
-                return true;
-            }
-            throw new TypeError(`Unknown stream for field: ${s} (allowed values: C, R, U, D)`);
-        });
-        return this;
-    }
     PK() {
-        this.streams = 'RUD'.split('');
         this.required = true;
         this.primary = true;
         return this;
@@ -52,16 +40,13 @@ class Field {
         return this;
     }
     meta(label, description) {
-        this.meta.label = name;
+        this.meta.label = label;
         this.meta.description = description;
         return this;
     }
 
     checkValue(value) {
         abstract('Field::checkValue');
-    }
-    allowedFor(stream) {
-        return this.streams.includes(stream);
     }
     getDefaultValue() {
         if (this.defaultValue === void 0) {
@@ -88,9 +73,11 @@ class Field {
     }
 
     toString() {
-        return this.model.name + '::' + this.name;
+        return `${this.typeString()} ${this.model.name}::${this.name}`;
     }
     typeString() {
         return this.type;
     }
 }
+
+module.exports = Field;

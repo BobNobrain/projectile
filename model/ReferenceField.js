@@ -10,7 +10,7 @@ const ComputedField = require('./ComputedField');
  * @field referencedModel    Model      Instance of model that this field refers to
  * @field essential          Boolean    Whether this reference is essential part of model and should be autofetched
  * @field fkFieldName        String     Foreign key field name that creates this ref
- * @field idFieldName        String     Name of primary key field of referenced model
+ * @field refPkFieldName     String     Name of primary key field of referenced model
  */
 class ReferenceField {
     constructor({ model }) {
@@ -23,12 +23,7 @@ class ReferenceField {
         this.essential = false;
         this.fkFieldName = null;
 
-        const pkNames = model.primaryKeyFieldNames;
-        if (pkNames.length === 1) {
-            this.idFieldName = pkNames[0];
-        } else {
-            this.idFieldName = void 0;
-        }
+        this.refPkFieldName = model.pkField.name;
     }
 
     nullable() {
@@ -45,7 +40,7 @@ class ReferenceField {
         return this;
     }
     by(fieldName) {
-        this.idFieldName = fieldName;
+        this.refPkFieldName = fieldName;
         return this;
     }
     via(fieldName) {
@@ -53,8 +48,8 @@ class ReferenceField {
     }
 
     getIdField() {
-        if (!this.idFieldName) return null;
-        return this.referencedModel.fields[this.idFieldName] || null;
+        if (!this.refPkFieldName) return null;
+        return this.referencedModel.fields[this.refPkFieldName] || null;
     }
     getFKField() {
         if (!this.fkFieldName) return null;
@@ -62,7 +57,7 @@ class ReferenceField {
     }
 
     asRegularField() {
-        const result = new Field('ref:' + this.referencedModel.getName());
+        const result = new Field('ref:' + this.referencedModel.name);
         if (this.multiple) {
             result.type += '[]';
         }
@@ -108,5 +103,9 @@ class ReferenceField {
             get: getter,
             set: setter
         });
+
+        return result;
     }
 }
+
+module.exports = ReferenceField;
